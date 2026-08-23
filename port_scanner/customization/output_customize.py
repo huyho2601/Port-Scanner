@@ -8,6 +8,11 @@ from port_scanner.core.tcp_scan import PortResult
 from port_scanner.core.ports_data import lookup_service
 from . import colors as clr 
 
+PORT_JUST = 10
+STATE_JUST = 10
+SERVICE_JUST = 20
+DESCRIPTION_JUST = 20
+
 def _coloring(text: str, color: str) -> str:
   if not clr.enabled():
     return text
@@ -29,8 +34,6 @@ def print_progress(done: int, total: int):
   if done == total:
     sys.stderr.write("\n")
 
-# TODO: Add a logical way to handle the case when the user wants to see closed/filtered ports in the output
-# TODO: Idea -a (all) flag to show all ports, or -c (closed) to show closed ports, or -f (filtered) to show filtered ports
 def print_result(target: str, results: list[PortResult], show_all: bool = False):
   open_ports = [r for r in results if r.state == "open"]
   filtered_ports = [r for r in results if r.state == "filtered"]
@@ -43,18 +46,22 @@ def print_result(target: str, results: list[PortResult], show_all: bool = False)
   print(f"=> Closed ports: {len(closed_ports)}")
 
   if open_ports:
-    header = f"{'PORT':<15}{'STATE':<15}{'SERVICE':<25}{'DESCRIPTION':<30}"
+    header = f"{'PORT':<{PORT_JUST}}{'STATE':<{STATE_JUST}}{'SERVICE':<{SERVICE_JUST}}{'DESCRIPTION'}"
     print(_coloring(header, clr.CYAN))
     print(_coloring("-" * len(header), clr.CYAN))
 
     for r in open_ports:
       info = r.banner if r.banner else r.service
-      print(f"{r.port:<15}{_coloring(r.state, clr.GREEN):<15}{r.service:<25}{info:<30}")
-
+      state_padding = f"{r.state:<{STATE_JUST}}"
+      print(f"{r.port:<{PORT_JUST}}{_coloring(state_padding, clr.GREEN)}{r.service:<{SERVICE_JUST}}{info}")
     print()
 
-  if show_all and filtered_ports:
-    pass
+  if show_all:
+    join_ports = ", ".join(str(p.port) for p in filtered_ports)
+    print(_coloring(f"{len(filtered_ports)} filtered port(s):", clr.YELLOW),
+          join_ports)
 
-  if show_all and closed_ports:
-    pass
+    join_ports = ", ".join(str(p.port) for p in closed_ports)
+    print(_coloring(f"{len(closed_ports)} closed port(s):", clr.RED),
+          join_ports)
+    
