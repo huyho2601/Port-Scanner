@@ -122,9 +122,7 @@ def main(argv: list[str] | None = None) -> int:
     if not ports:
         parser.error("No valid ports to scan")
 
-    print(f"target {argv.target}")
     ip = resolve_target(argv.target)
-    print(f"IP: {ip}")
 
     display_target = argv.target if argv.target == ip else f"{argv.target} - {ip}"
 
