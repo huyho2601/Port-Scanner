@@ -23,6 +23,8 @@ def _check_port(target:str, port:int, timeout:float) -> PortResult:
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     sock.settimeout(timeout)
     try:
+      # print(target)
+      # print(port)
       result = sock.connect_ex((target,port))
       if result == 0:
         return PortResult(port=port, state="open")
@@ -67,7 +69,7 @@ def tcp_connect_scan(
       ports: list[int],
       timeout: float = 1.0,
       max_threads: int = 100,
-      grab_banner: bool = True,
+      grab_banners: bool = True,
       progress_cb: Optional[Callable[[int, int], None]] = None,
   ) -> list[PortResult]:
       """
@@ -79,6 +81,7 @@ def tcp_connect_scan(
 
       # Use ThreadPoolExecutor to scan ports concurrently
       with concurrent.futures.ThreadPoolExecutor(max_workers=max_threads) as executor:
+      
         futures = {executor.submit(_check_port, target, p, timeout):p for p in ports}
 
         for future in concurrent.futures.as_completed(futures):
@@ -92,7 +95,7 @@ def tcp_connect_scan(
       open_results = [r for r in results if r.state == "open"]
 
       # Identify banners for open ports
-      if grab_banner and open_results:
+      if grab_banners and open_results:
         with concurrent.futures.ThreadPoolExecutor(max_workers=min(50, len(open_results))) as executor:
           banner_future ={
             executor.submit(grab_banner, target, r.port, timeout + 0.5): r for r in open_results
