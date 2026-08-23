@@ -6,7 +6,7 @@ from dataclasses import asdict
 
 from port_scanner.core.tcp_scan import PortResult
 from port_scanner.core.ports_data import lookup_service
-import colors as clr 
+from . import colors as clr 
 
 def _coloring(text: str, color: str) -> str:
   if not clr.enabled():

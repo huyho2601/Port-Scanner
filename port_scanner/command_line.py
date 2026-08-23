@@ -14,8 +14,8 @@ from port_scanner.core.syn_scan import ScapyNotAvailableError, InsufficientPrivi
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="Port Scanner",
-        description="A simple TCP/SYN scanner with service indentification"
-        epilog="If you have any questions or suggestions, feel free to let me know!"
+        description="A simple TCP/SYN scanner with service indentification",
+        epilog="If you have any questions or suggestions, feel free to let me know!",
         )
 
     parser.add_argument(
@@ -35,7 +35,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
 
     parser.add_argument(
-        "--timeout"
+        "--timeout",
         type=float,
         default=1.0,
         help="Per-port timeout in seconds. Default: 1.0"
@@ -141,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
             results = syn_scan(
                 target = ip,
                 ports = ports,
-                timeout = argv.timeout
+                timeout = argv.timeout,
                 max_threads = min(argv.threads,50),
                 progress_cb=print_progress,
             )
