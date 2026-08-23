@@ -66,7 +66,7 @@ def parse_ports(ports_str: str | None) -> list[int]:
         return ports_int_complete
 
     # Invalid input: characters or symbols
-    if re.fullmatch(r"[\d,\-\s]+", ports_str):
+    if not re.fullmatch(r"[\d,\-\s]+", ports_str):
         raise ValueError("Invalid ports input. The port(s) must be a number")
 
     # Case: "80", "80,443", "1-1024", "22, 80, 1-1024"
@@ -104,6 +104,7 @@ def resolve_target(target: str) -> str:
     except socket.gaierror:
         print(f"Could not resolve the host '{target}'", file=sys.stderr)
         sys.exit(1)
+    return ip
 
 
 
@@ -121,7 +122,10 @@ def main(argv: list[str] | None = None) -> int:
     if not ports:
         parser.error("No valid ports to scan")
 
+    print(f"target {argv.target}")
     ip = resolve_target(argv.target)
+    print(f"IP: {ip}")
+
     display_target = argv.target if argv.target == ip else f"{argv.target} - {ip}"
 
     print(f"Start scanning {display_target} - {len(ports)} ports, mode = {argv.type}")
@@ -155,6 +159,8 @@ def main(argv: list[str] | None = None) -> int:
     # Print the results
     print_result(display_target, results, argv.all)
     print(f"\nScan completed in {elapsed:.2f}s")
+
+    return 0
 
 
 if __name__ == "__main__":
