@@ -144,7 +144,7 @@ def main(argv: list[str] | None = None) -> int:
                 target = ip,
                 ports = ports,
                 timeout = argv.timeout,
-                max_threads = min(argv.threads,50),
+                max_workers = min(argv.threads,50),
                 progress_cb=print_progress,
             )
         except (ScapyNotAvailableError, InsufficientPrivilegesError) as e:
