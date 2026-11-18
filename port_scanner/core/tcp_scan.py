@@ -47,7 +47,7 @@ def _check_port(target: str, port: int, timeout: float) -> PortResult:
     sock.settimeout(timeout)
     try:
         result = sock.connect_ex((target, port))
-    except OSError:  # includes socket.timeout on some platforms
+    except OSError:  # includes socket.timeout
         return PortResult(port=port, state="filtered")
     finally:
         sock.close()
@@ -87,7 +87,7 @@ def _probe(sock: socket.socket, target: str, port: int) -> str:
     if port in HTTP_PORTS:
         return _http_banner(sock, target)
 
-    # Most other services (SSH, FTP, SMTP, POP3, IMAP, MySQL...) greet first,
+    # Most other services (SSH, FTP, SMTP, POP3, IMAP, MySQL...) greet first
     try:
         return _first_line(sock.recv(1024))
     except socket.timeout:
@@ -101,7 +101,7 @@ def grab_banner(target: str, port: int, timeout: float = 1.5) -> str:
             if port in TLS_PORTS:
                 ctx = ssl.create_default_context()
                 ctx.check_hostname = False
-                ctx.verify_mode = ssl.CERT_NONE  # we only want the banner, not trust
+                ctx.verify_mode = ssl.CERT_NONE 
                 with ctx.wrap_socket(raw) as tls:
                     return _probe(tls, target, port)
             return _probe(raw, target, port)
