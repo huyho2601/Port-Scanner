@@ -39,22 +39,3 @@ port-scanner [-h] [-p PORTS] [-t {tcp,syn}] [--timeout TIMEOUT] [-a]
              [--threads THREADS] [--no-banner] [-o FILE] [--format {json,csv}]
              target
 ```
- 
-options:
-  -h, --help            show this help message and exit
-  -p PORTS, --ports PORTS
-                        Ports to scan: a comma-separated list (22,80,443), a range (1-1024), a mix of both
-                        (22,80-443), 'common' for ~100 well-known ports, or 'top1000' for the 1000 most common
-                        ports. Default: common
-  -t {tcp,syn}, --type {tcp,syn}
-                        Scan technique. 'tcp' = full connect scan (no privileges needed). 'syn' = half-open scan
-                        via scapy (needs root). Default: tcp
-  --timeout TIMEOUT     Per-port timeout in seconds. Default: 1.0
-  -a, --all             Also list closed and filtered ports (and include them in -o output). Default: only open
-                        ports
-  --threads THREADS     Max concurrent probes. Default: 200 (SYN scan is capped at 50)
-  --no-banner           Skip banner grabbing on open ports (TCP scan only). Faster and quieter.
-  -o FILE, --output FILE
-                        Save results to FILE. Format is taken from the extension (.json/.csv) unless --format is
-                        given.
-  --format {json,csv}   Output file format (overrides the -o file extension).
